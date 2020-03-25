@@ -1,0 +1,30 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        关于我们&nbsp;&nbsp;&nbsp;&nbsp;<a href="review?viewname=admin/blog/new"><strong></strong></a>
+    </h1>
+   
+        <p style="text-indent:32px;line-height:27px"><span style="font-size: 16px;font-family: 宋体">本次课题主要设计的是一个以动漫为主题的动漫动态个人网站，它以动漫分享、动漫信息发布以及评论互动为主要目的。通过传播一些动漫更新信息、图片还有动漫视频等为有同样喜好的人们提供一个有利的平台。致使用户可以足不出户就可以在网站上发表自己对动漫剧情的看法。极大程度上方便了广大动漫爱好者的业余生活。</span></p><p style="text-align:center"><img src="/tp50/public/upload/image/20180517/1526557543943514.jpg" title="1526557543943514.jpg" alt="25.jpg"/></p><p><br/></p>
+
+</div>
+
+</body>
+
+</html>
+<script>
+    //获取分页最大数量
+    //post 请求
+    $.post("/tp50/public/blog/admin/selectnum", {
+        "tablename": "t_blog", //表名
+        "sql": ''
+    }, function(result) {
+        // 显示总条数
+        $("#count").text(result);
+
+    });
+    //更换活动标签（active）
+
+    $(".active").removeClass("active");
+
+    $(".help").addClass("active");
+</script>

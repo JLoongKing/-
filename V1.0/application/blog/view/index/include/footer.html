@@ -1,0 +1,93 @@
+<div style="clear:both" />
+<!--采用container-fluid，使得整个页尾的宽度为100%，并设置它的背景色-->
+<footer class="container-fluid foot-wrap" style="background-color: #755e34; margin:0;">
+    <!--采用container，使得页尾内容居中 -->
+    <div class="container">
+        <div class="row">
+            <div class="row-content col-lg-4 col-sm-4 col-xs-6">
+                <h3>分享到</h3>
+                <ul>
+                    <div class="bdsharebuttonbox">
+                        <a href="#" class="bds_more" data-cmd="more"></a>
+                        <a href="#" class="bds_qzone" data-cmd="qzone"></a>
+                        <a href="#" class="bds_tsina" data-cmd="tsina"></a>
+                        <a href="#" class="bds_tqq" data-cmd="tqq"></a>
+                        <a href="#" class="bds_renren" data-cmd="renren"></a>
+                        <a href="#" class="bds_weixin" data-cmd="weixin"></a>
+                    </div>
+                    <script>
+                        window._bd_share_config = {
+                            "common": {
+                                "bdSnsKey": {},
+                                "bdText": "",
+                                "bdMini": "2",
+                                "bdPic": "",
+                                "bdStyle": "0",
+                                "bdSize": "16"
+                            },
+                            "share": {},
+                            "image": {
+                                "viewList": ["qzone", "tsina", "tqq", "renren", "weixin"],
+                                "viewText": "分享到：",
+                                "viewSize": "16"
+                            },
+                            "selectShare": {
+                                "bdContainerClass": null,
+                                "bdSelectMiniList": ["qzone", "tsina", "tqq", "renren", "weixin"]
+                            }
+                        };
+                        with(document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+                    </script>
+                </ul>
+            </div>
+            <div class="row-content col-lg-4 col-sm-4 col-xs-6">
+                <h3>设计者</h3>
+                <ul>
+                    <li><a href="https://www.jloongking.cn">Admin</a></li>
+                </ul>
+            </div>
+            <div class="row-content col-lg-4 col-sm-4 col-xs-6">
+                <h3>友情链接</h3>
+                <ul id="linklist">
+                    <li><a href="https://www.jloongking.cn">JLoongKing</a></li>
+                </ul>
+            </div>
+
+
+        </div>
+        <!--/.row -->
+    </div>
+    <!--/.container-->
+    <p align="center" style="margin-top: 20px; font-size:10px;color: #878B91;">
+        备案号辽ICP备16015900号
+    </p>
+    <p align="center" style="margin-top: 20px;color:#878B91;">
+        Copyright &copy;2018 JLoongKing
+    </p>
+
+
+</footer>
+<script>
+    //post 请求
+    $.post("/tp50/public/blog/index/select", {
+        "tablename": "t_link", //表名
+        "sql": '', //查询的条件
+        "limit": '0,10' //分页
+    }, function(result) {
+        $html = "";
+        //将每一项数据进行遍历，生成html代码
+        //回掉函数处理，输出结果
+        //如果没有获取错误码
+        if (result.code != 401) {
+            //遍历结果处理数据进行输出
+            result.forEach(function(item) {
+                $html += " <li><a href='" + item.linkUrl + "'>" + item.linkName + "</a></li>"
+            });
+
+        } else {
+            alert(result.info);
+        }
+        $("#linklist").html($html);
+
+    });
+</script>

@@ -1,0 +1,134 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        Blog&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="review?viewname=admin/blog/new">
+            <strong>
+                <small style="text-decoration:blink;font-size:small;color:teal;">Create New</small>
+            </strong>
+        </a>
+    </h1>
+    <div class="well summary">
+        <ul>
+            <li>
+                <a style="text-decoration:blink;color:teal;"> Blogs&nbsp;&nbsp;共
+                    <span class="BlogCount" id="count">0</span>条数据&nbsp;&nbsp;&nbsp;&nbsp;新建博文</a>
+            </li>
+        </ul>
+    </div>
+    <div class="form-horizontal">
+
+        <div class="control-group">
+            <label class="control-label" for="inputEmail">标题</label>
+            <div class="controls">
+                <input type="text" id="title" placeholder="Title">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputEmail">关键词</label>
+            <div class="controls">
+                <input type="text" id="keyword" placeholder="KeyWord">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputEmail">标签</label>
+            <div class="controls">
+                <select id="typeselet">
+
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="inputEmail">简介</label>
+            <div class="controls">
+                <textarea rows="3" id="summary"></textarea>
+            </div>
+        </div>
+        <div class="control-group">
+
+            <!-- 加载编辑器的容器 -->
+            <script id="container" name="content" type="text/plain">
+        
+        </script>
+
+
+        </div>
+
+
+        <!-- <button class="btn btn-large btn-block" onclick="update()" type="button">修改</button> -->
+        <div style="margin-top:20px;text-align:center;">
+            <button style="width:15%" class="btn btn-primary" onclick="update()" type="button">上传</button>
+        </div>
+    </div>
+    </body>
+
+    </html>
+    <script>
+        //获取分页最大数量
+        //post 请求
+        $.post("/tp50/public/blog/admin/selectnum", {
+            "tablename": "t_blog", //表名
+            "sql": ''
+        }, function (result) {
+            // 显示总条数
+            $("#count").text(result);
+
+        });
+        gettypes();
+        //获取标签
+        //获取分页数据
+        function gettypes() {
+            //post 请求
+            $.post("/tp50/public/blog/admin/select", {
+                "tablename": "t_blogtype", //表名
+                "sql": '', //查询的条件
+                "limit": "0,50" //分页
+            }, function (result) {
+                //回掉函数处理，输出结果
+                //如果没有获取错误码
+                if (result.code != 401) {
+                    $html = "";
+                    //遍历结果处理数据进行输出
+                    result.forEach(function (item) {
+                        $inner = "";
+                        $inner = $inner + "<option value='"+item.id+"' >" + item.typeName + "</option>"
+                        $html += $inner;
+                    });
+                    $("#typeselet").html($html);
+                } else {
+                    alert(result.info);
+                }
+            });
+        }
+        var ue = UE.getEditor('container', { initialFrameHeight: 400, });
+        function update() {
+            $title = $("#title").val();
+            $keyword = $("#keyword").val();
+            $blogtype = $("#typeselet").val();
+            $summary = $("#summary").val();
+            $content = ue.getContent();
+            //post 请求
+            //上传博文
+            $.post("/tp50/public/blog/admin/add", {
+                "tablename": "t_blog", //表名
+                "data": { 
+                    "title": $title, 
+                    "keyWord": $keyword, 
+                    "typeId": $blogtype, 
+                    "content": $content, 
+                    "summary": $summary,
+                    "clickHit":0,
+                    "replyHit":0
+                 }, //上传数据
+            }, function (result) {
+                //回掉函数处理，输出结果
+                //如果没有获取错误码
+                if (result.code != 401) {
+                    alert(result.info);
+                    window.location.href="/tp50/public/blog/admin/review?viewname=admin/blog/bloglist";
+                } else {
+                    alert(result.info);
+                }
+            });
+        }
+    </script>

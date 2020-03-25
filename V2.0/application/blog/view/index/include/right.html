@@ -1,0 +1,137 @@
+<div class="right">
+    <!--右侧布局-->
+
+    <div class="date">
+        <div id="lastMon">
+            <</div>
+                <div id="dTitle"></div>
+                <div id="nextMon">></div>
+                <div id="dataIn">
+                    <div id="tr" class="tr">
+
+                    </div>
+
+                </div>
+
+
+
+        </div>
+
+        <!--data结束-->
+        <div class="new">
+            <p>最新<a id="gren">文章</a></p>
+            <ol id="newlist">
+                <li class="">
+                    <a id="newbloglist1" style=" color: orangered ;" href="/tp50/public/blog/index//blog?blogid={$news[0]['id']}">{$news[0]["title"]}</a>
+                </li>
+                <li class="">
+                    <a id="newbloglist2" href="/tp50/public/blog/index/blog?blogid={$news[1]['id']}">{$news[1]["title"]}</a>
+                </li>
+                <li class="">
+                    <a id="newbloglist3" href="/tp50/public/blog/index/blog?blogid={$news[2]['id']}">{$news[2]["title"]}</a>
+                </li>
+                <li class="">
+                    <a id="newbloglist4" href="/tp50/public/blog/index/blog?blogid={$news[3]['id']}">{$news[3]["title"]}</a>
+                </li>
+            </ol>
+        </div>
+        <!--new 结束-->
+        <div class="hot">
+            <!--hot开始-->
+            <p>热度排行</p>
+            <ul id="hotlist">
+                <li type="square" class="">
+                    <a id="hotbloglist1" style=" color: orangered ;" href="/tp50/public/blog/index/blog?blogid={$hots[0]['id']}">{$hots[0]["title"]}</a>
+                </li>
+                <li type="square" class="">
+                    <a id="hotbloglist2" href="/tp50/public/blog/index/blog?blogid={$hots[1]['id']}">{$hots[1]["title"]}</a>
+                </li>
+                <li type="square" class="">
+                    <a id="hotbloglist3" href="/tp50/public/blog/index/review/blog?blogid={$hots[2]['id']}">{$hots[2]["title"]}</a>
+                </li>
+                <li type="square" class="">
+                    <a id="hotbloglist4" href="/tp50/public/blog/index/blog?blogid={$hots[3]['id']}">{$hots[3]["title"]}</a>
+                </li>
+            </ul>
+        </div>
+        <!--hot结束-->
+        <div id="clicklog" onclick='toLogin()' style="width:80%;margin:40px 0;text-align:center"><img style="width:50%;border-radius:50%;" id="icon" src="/tp50/public/static/images/qq.jpg" alt="点击登陆" />
+            <p id="nickname" style="margin:20px;font-size:18px;color:dimgray">点我登陆</p>
+            <p id="logout" onclick="dologout()" style="margin:20px;font-size:18px;color:darkgray;display:none">点击退出</p>
+        </div>
+    </div>
+    <!--右侧结束-->
+    <div class="clear"></div>
+</div>
+<!-- <p id="frist-words">喜欢吗？</p>
+<p id="second-words">喜欢就选我吧！</p>
+<p id="third-words">与你携手共进！</p> -->
+</body>
+<script>
+    if ($.cookie('nickname') != null && $.cookie('icon') != null && $.cookie('openid') != null) {
+        console.log($.cookie('nickname') + "aa" + $.cookie('icon') + "aa" + $.cookie('openid'));
+        $("#nickname").html("欢迎你！" + $.cookie('nickname'));
+        $("#icon").attr('src', $.cookie('icon'));
+        $("#logout").css("display", "block");
+        $("#clicklog").attr("onclick", "");
+
+    }
+    // getdata1("id desc", "#newbloglist");
+    // getdata1("clickHit desc", "#hotbloglist");
+    // //获取数据
+    // function getdata1($order, $itemname) {
+    //     //post 请求
+    //     $.post("/tp50/public/blog/index/selectcolorder", {
+    //         "tablename": "t_blog", //表名
+    //         "sql": '', //查询的条件
+    //         "colname": "id,title",
+    //         "order": $order, //排序规则
+    //         "limit": "0,4" //分页
+    //     }, function(result) {
+    //         //回掉函数处理，输出结果
+    //         //如果没有获取错误码
+    //         if (result.code != 401) {
+    //             $i = 1;
+    //             //遍历结果处理数据进行输出
+    //             result.forEach(function(item) {
+    //                 $($itemname + $i).html(item.title);
+    //                 $($itemname + $i).attr("href", "/tp50/public/blog/index/review?viewname=index/blog&blogid=" + item.id);
+    //                 $i++;
+    //             });
+
+    //         } else {
+    //             alert(result.info);
+    //         }
+    //     });
+    // }
+    // qq登陆
+    function toLogin() {
+        //以下为按钮点击事件的逻辑。注意这里要重新打开窗口
+        //否则后面跳转到QQ登录，授权页面时会直接缩小当前浏览器的窗口，而不是打开新窗口
+        var A = window.open("http://www.JLoongKing.cn/tp50/public/qq/index/qqLogin", "TencentLogin", "width=450,height=320,menubar=0,scrollbars=1,resizable = 1, status = 1, titlebar = 0, toolbar = 0, location = 1 ");
+        var timer = setInterval(function() {
+            console.log("aaa");
+            if ($.cookie('nickname') != null && $.cookie('icon') != null && $.cookie('openid') != null) {
+                console.log()
+                $("#nickname").html("欢迎你！" + $.cookie('nickname'));
+                $("#icon").attr('src', $.cookie('icon'));
+                $("#logout").css("display", "block");
+                $("#clicklog").attr("onclick", "");
+                clearInterval(timer);
+                A.close();
+
+            }
+        }, 300);
+    }
+    //退出登录
+    function dologout() {
+        //post 请求
+        $.post("/tp50/public/qq/index/logout", function(result) {
+            alert(result.info);
+            window.location.reload();
+        });
+    }
+</script>
+<script src="/tp50/public/static/js/main.js"></script>
+
+</html>

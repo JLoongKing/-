@@ -1,0 +1,189 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        Banner&nbsp;&nbsp;&nbsp;&nbsp;
+        <strong>
+            <small style="text-decoration:blink;font-size:small;color:teal;">设置banner图</small>
+        </strong>
+    </h1>
+    <div id="banner">
+        <div id="banner_bg">
+        </div>
+        <!--标题背景-->
+        <div id="banner_info">
+        </div>
+        <!--标题-->
+        <ul>
+            <li class="on">
+                1
+            </li>
+            <li>
+                2
+            </li>
+            <li>
+                3
+            </li>
+            <li>
+                4
+            </li>
+        </ul>
+        <div id="banner_list">
+            <a href="#" target="_blank">
+                <img id="img1" src="imgs/p1.jpg" title="banner图1" alt="banner图1">
+            </a>
+            <a href="#" target="_blank">
+                <img id="img2" src="imgs/p2.jpg" title="banner图2" alt="banner图2">
+            </a>
+            <a href="#" target="_blank">
+                <img id="img3" src="imgs/p3.jpg" title="banner图3" alt="banner图3">
+            </a>
+            <a href="#" target="_blank">
+                <img id="img4" src="imgs/p1.jpg" title="banner图4" alt="banner图4">
+            </a>
+        </div>
+
+    </div>
+    <div style="width:80%;margin:auto">
+        <div class="row-fluid" style="margin:0px;padding:0px;">
+            <div class="span6" style="margin:25px 0 0 0;">
+                <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
+                    <button class="btn btn-success fileinput-button" type="button">修改图片1</button>
+                    <input type="file" class="file_img" onchange="loadFile(this.files[0],1)" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">
+                    <span id="filename1" style="vertical-align: middle">未上传文件</span>
+                </div>
+            </div>
+            <div class="span6" style="margin:25px 0 0 0;">
+                <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
+                    <button class="btn btn-success fileinput-button" type="button">修改图片2</button>
+                    <input type="file" class="file_img" onchange="loadFile(this.files[0],2)" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">
+                    <span id="filename2" style="vertical-align: middle">未上传文件</span>
+                </div>
+            </div>
+            <div class="span6" style="margin:25px 0 0 0;">
+                <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
+                    <button class="btn btn-success fileinput-button" type="button">修改图片3</button>
+                    <input type="file" class="file_img" onchange="loadFile(this.files[0],3)" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">
+                    <span id="filename3" style="vertical-align: middle">未上传文件</span>
+                </div>
+            </div>
+            <div class="span6" style="margin:25px 0 0 0;">
+                <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
+                    <button class="btn btn-success fileinput-button" type="button">修改图片4</button>
+                    <input type="file" class="file_img" onchange="loadFile(this.files[0],4)" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">
+                    <span id="filename4" style="vertical-align: middle">未上传文件</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <button class="btn btn-large btn-block" onclick="update()" type="button">修改</button> -->
+    <div style="margin-top:20px;text-align:center;">
+        <button style="width:15%" class="btn btn-primary" onclick="update()" type="button">上传</button>
+    </div>
+</div>
+
+</body>
+
+
+</html>
+<script>
+    getdata();
+    //获取数据
+    function getdata() {
+        //post 请求
+        $.post("/tp50/public/blog/admin/select", {
+            "tablename": "t_banner", //表名
+            "sql": '', //查询的条件
+            "limit": "0,4" //分页
+        }, function (result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                $html = "";
+                $i = 1;
+                //遍历结果处理数据进行输出
+                result.forEach(function (item) {
+                    $("#img" + $i).attr("src", item.imgurl);
+                    $i++;
+                });
+                $("#tbody").html($html);
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+    function loadFile(file, order) {
+        console.log(order);
+        $("#filename" + order).html(file.name);
+        $("#img" + order).attr("src", "/tp50/public/static/img/load.gif");
+        var fd = new FormData();
+        fd.append("upfile", file);
+        $.ajax({
+            url: '/tp50/public/blog/fileuploader/up',
+            type: "post",
+            processData: false,
+            contentType: false,
+            data: fd,
+            success: function (result) {
+                if (result.code != 400) {
+                    alert("上传失败！");
+                    $("#img" + order).attr("src", "/tp50/public/static/img/imgfailed.jpg");
+                } else {
+                    $("#img" + order).attr("src", result.url);
+                }
+            },
+            error: function (result) {
+
+                alert("上传失败！");
+                $("#img" + order).attr("src", "/tp50/public/static/img/imgfailed.jpg");
+
+            },
+        });
+
+    }
+    //更换活动标签（active）
+
+    $(".active").removeClass("active");
+
+    $("#bannersetting").addClass("active");
+
+    function update() {
+        $imgurl = new Array()
+        $imgurl[0] = $("#img1").attr("src");
+        $imgurl[1] = $("#img2").attr("src");
+        $imgurl[2] = $("#img3").attr("src");
+        $imgurl[3] = $("#img4").attr("src");
+        postimg(1, $imgurl[0]);
+
+
+    }
+    function postimg(id, imgurl) {
+        //post 请求
+        //上传banner
+        $.post("/tp50/public/blog/admin/update", {
+            "tablename": "t_banner", //表名
+            "fieldname": "id",
+            "fieldvalue": id,
+            "data": {
+                "imgurl": imgurl,
+            }, //上传数据
+        }, function (result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                id++;
+                if (id == 5) {
+                    alert(result.info);
+                    window.location.href = "/tp50/public/blog/admin/review?viewname=banner";
+                }
+                if (id <= 4) {
+                    postimg(id, $imgurl[id - 1]);
+                }
+
+
+
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+</script>

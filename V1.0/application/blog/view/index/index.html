@@ -1,0 +1,218 @@
+{include file="index/include/header" /}
+<div class="left">
+    <div id="alltypes" style="width:100%;margin:40px auto; text-align:center;"></div>
+    <div id="thistitle" style="width:100%;margin:10px auto; text-align:center;font-size:20px">全部视频</div>
+    <div style="width:100%;margin:30px auto; text-align:center;">共有
+        <span id="count">0</span>个相关项</div>
+
+    <!--note-->
+    <div class="note">
+        <div id="notelist">
+
+        </div>
+        <ul class="pager">
+            <li id="older" onclick="older()" class="previous">
+                <a>&larr;Older</a>
+            </li>
+            <li>
+                <a id="page">1</a>
+            </li>
+            <li id="more" class="next" onclick="next()">
+                <a>Next &rarr;</a>
+            </li>
+        </ul>
+    </div>
+    <!--note结束-->
+
+</div>
+<!--left结束-->
+
+<script>
+    $typelist = "";
+    //post 请求
+    $.post("/tp50/public/blog/index/selectorder", {
+        "tablename": "t_blogtype", //表名
+        "order":"orderNo",
+        "sql": '', //查询的条件
+        "limit": "0,50" //分页
+    }, function(result) {
+        //回掉函数处理，输出结果
+        //如果没有获取错误码
+        if (result.code != 401) {
+            $typelist = result;
+            $html = "";
+            if (GetQueryString("blogid") == null || GetQueryString("blogid") == '') {
+
+            } else {
+
+                $("#thistitle").html(gettype(GetQueryString("blogid")));
+            }
+
+            //遍历结果处理数据进行输出
+            result.forEach(function(item) {
+
+                $colors = ['label label-default', 'label label-primary', 'label label-success', 'label label-info', 'label label-warning', 'label label-danger'];
+                $colorid = Math.ceil(Math.random() * 6);
+                $inner = "<a href='/tp50/public/blog/index/review?viewname=index&blogid=" + item.id + "'><span style='margin:10px;' class='" + $colors[$colorid - 1] + "'>" + item.typeName + "</span></a>";
+                $html += $inner;
+            });
+            $("#alltypes").html($html);
+        } else {
+            alert(result.info);
+        }
+    });
+
+    function gettype($tid) {
+        for (j = 0; j < $typelist.length; j++) {
+            if ($typelist[j].id == $tid) {
+                return $typelist[j].typeName;
+            }
+        }
+    }
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+    $blogtype = "";
+    if (GetQueryString("blogid") == null || GetQueryString("blogid") == '') {
+        $blogtype = "";
+    } else {
+        $blogtype = '{"typeId":"=,' + GetQueryString("blogid") + '"}';
+       
+          //post 请求
+          $.post("/tp50/public/blog/index/select", {
+            "tablename": "t_blogtype", //表名
+            "sql": '{"id":"=,' + GetQueryString("blogid") + '"}', //查询的条件
+            "limit":''//分页
+        }, function(result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                //遍历结果处理数据进行输出
+                result.forEach(function(item) {
+                    
+                    $.post("/tp50/public/blog/admin/update", {
+                        "tablename": "t_blogtype", //表名
+                        "fieldname":"id",
+                        "fieldvalue":GetQueryString("blogid"),
+                        "data": {
+                            "onclick": item.onclick+1
+                        }, //上传数据
+                    }, function (result) {
+                        //回掉函数处理，输出结果
+                        //如果没有获取错误码
+                        if (result.code != 401) {
+                         
+                        } else {
+                            alert(result.info);
+                        }
+                    });
+                });
+               
+            } else {
+                alert(result.info);
+            }
+        });
+
+    }
+
+
+    $eachnum = 5;
+    $maxnum = 0;
+    //获取分页最大数量
+    //post 请求
+    $.post("/tp50/public/blog/index/selectnum", {
+        "tablename": "t_blog", //表名
+        "sql": $blogtype
+    }, function(result) {
+        // 显示总条数
+        $("#count").text(result);
+        //获取数据数量除每页条数
+        $maxnum = parseInt(result / $eachnum) + 1;
+        if ($maxnum == 0) {
+            $("#notelist").append("<div style='margin-top：40px; text-align:center'>到到底了(-_-)!</div>");
+        }
+    });
+    //初始页面数
+    $page = 1;
+    //页面初始化
+    pagealert();
+
+    //获取分页数据
+    function getdata() {
+
+        $("#notelist").html("");
+        //post 请求
+        $.post("/tp50/public/blog/index/select", {
+            "tablename": "t_blog", //表名
+            "sql": $blogtype, //查询的条件
+            "limit": ($page - 1) * $eachnum + "," + $page * $eachnum //分页
+        }, function(result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                $i = 1;
+                $html = "";
+                //遍历结果处理数据进行输出
+                result.forEach(function(item) {
+                    $lihtml = '<!--note img--><div class="not"><p class="note_title">小说井龙王开始热更啦！</p><p class="note_infor"> &nbsp; &nbsp; 作者：jloong &nbsp; &nbsp;类型：<span class="type">创作</span></p> <div class="note_img"><video class="box-shadow-1" src="" style="width: 100px;height: 100px;"></video></div><div class="note_body"><p>西游世界各教纷争，井龙王是否为龙，他为何屈居深井，世界为棋盘，洪荒大地再起浩劫。潜龙勿用，一飞冲天。 这是一个由封神结束开始的故事。面对大劫，他将如何在有限时间内成为大能翻云覆雨！</p></div><div class="clear"></div><!--更新时间作者--><div class="infor"><p><img src="/tp50/public/static//img/time.jpg" alt="">更新时间：<span class="updatetime">1995.12.14</span> &nbsp; &nbsp; 浏览次数：<span class="clickHit">12</span>  &nbsp; &nbsp;点赞次数：<span class="replyHit">12</span>  &nbsp; &nbsp;</p></div></div>'
+                    $("#notelist").append("<a style='text-decoration : none;color:#666666' href='/tp50/public/blog/index/review?viewname=index/blog&blogid=" + item.id + "'><div id='li" + $i + "'></div></a>");
+                    $("#li" + $i).html($lihtml);
+                    $("#li" + $i).children(".not").children(".note_infor").children(".type").html(gettype(item.typeId));
+                    $("#li" + $i).children(".not").children(".note_title").html(item.title);
+                    $("#li" + $i).children(".not").children(".note_img").children("video").attr("src", item.content);
+                    $("#li" + $i).children(".not").children(".note_body").html(item.summary);
+                    $("#li" + $i).children(".not").children(".infor").children("p").children(".updatetime").html(item.updatetime);
+                    $("#li" + $i).children(".not").children(".infor").children("p").children(".clickHit").html(item.clickHit);
+                    $("#li" + $i).children(".not").children(".infor").children("p").children(".replyHit").html(item.replyHit);
+                    $i++;
+                });
+                if (result.lenth < 5) {
+                    $("#notelist").append("<div style='margin-top：40px; text-align:center'>到到底了(-_-)!</div>");
+                }
+                $("#tbody").html($html);
+               
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+    //下一页
+    function next() {
+        $page++;
+        pagealert();
+    }
+    //上一页
+    function older() {
+        $page--;
+        pagealert();
+    }
+    // 页面变化处理
+    function pagealert() {
+        if ($page <= 1) {
+            if ($page == 1) {
+                getdata();
+            }
+            $page = 1;
+            $("#older").addClass("disabled");
+            $("#more").removeClass("disabled");
+            $("#page").text($page);
+        } else if ($page >= $maxnum) {
+            if ($page == $maxnum) {
+                getdata();
+            }
+            $page = $maxnum;
+            $("#more").addClass("disabled");
+            $("#older").removeClass("disabled");
+            $("#page").text($page);
+        } else {
+            $("#older").removeClass("disabled");
+            $("#more").removeClass("disabled");
+            $("#page").text($page);
+        }
+
+    }
+</script> {include file="index/include/right" /} {include file="index/include/footer" /}

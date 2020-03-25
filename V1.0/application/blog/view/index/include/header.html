@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/tp50/public/static/css/main.css">
+
+    <link href="/tp50/public/static/css/banner.css" rel="stylesheet">
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/tp50/public/static/bootstrap/bootstrap.css" />
+
+    <script src="/tp50/public/static/bootstrap/jquery.js"></script>
+    <script src="/tp50/public/static/bootstrap//bootstrap.min.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/js/banner.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/ueditor.parse.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/ueditor.all.min.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <style>
+        body {
+            min-width: 1080px;
+            max-width: 1366px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body style="background:url(/tp50/public/static/images/bg1.jpg) repeat;background-size:100%;">
+    <div class="header" style="margin:0;">
+        <div id="banner" style="width:100%;height:350px;">
+            <div id="banner_bg">
+            </div>
+            <!--标题背景-->
+            <div id="banner_info" style="display:none">
+            </div>
+            <!--标题-->
+            <ul style="display:none">
+                <li class="on">
+                    1
+                </li>
+                <li>
+                    2
+                </li>
+                <li>
+                    3
+                </li>
+                <li>
+                    4
+                </li>
+            </ul>
+            <div id="banner_list">
+                <a href="#" target="_blank">
+                    <img style="width: 100%;" id="img1" src="" title="banner图1" alt="banner图1">
+                </a>
+                <a href="#" target="_blank">
+                    <img style="width: 100%;" id="img2" src="" title="banner图2" alt="banner图2">
+                </a>
+                <a href="#" target="_blank">
+                    <img style="width: 100%;" id="img3" src="" title="banner图3" alt="banner图3">
+                </a>
+                <a href="#" target="_blank">
+                    <img style="width: 100%;" id="img4" src="" title="banner图4" alt="banner图4">
+                </a>
+            </div>
+
+        </div>
+        <div class="bg">
+
+            <div class="nav">
+                <ul>
+                    <li class="nav_item">
+                        <a href="/tp50/public/blog/index/review?viewname=index/index" class="home">HOME</a>
+                    </li>
+                    <!-- 
+                    <li class="nav_item">
+                        <a href="#">最近专题</a>
+                    </li> -->
+                    <!-- <li class="nav_item"><a href="#">留下足迹</a></li> -->
+                    <li class="nav_item">
+                        <a href="/tp50/public/blog/index/review?viewname=index/aboutme">关于我</a>
+                    </li>
+
+                    <div class="clear"></div>
+                </ul>
+            </div>
+            <div class="mood" id="sign">
+
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="middle-body" style="background-color:antiquewhite;padding:20px 0;">
+        <script>
+            $username = "Admin"
+                //获取原签名信息
+                //post 请求
+            $.post("/tp50/public/blog/index/select", {
+                "tablename": "t_blogger", //表名
+                "sql": '{"userName":"=,' + $username + '"}'
+            }, function(result) {
+                //显示信息
+                $("#sign").html(result[0].sign)
+
+            });
+            getdata();
+            //获取数据
+            function getdata() {
+                //post 请求
+                $.post("/tp50/public/blog/index/select", {
+                    "tablename": "t_banner", //表名
+                    "sql": '', //查询的条件
+                    "limit": "0,4" //分页
+                }, function(result) {
+                    //回掉函数处理，输出结果
+                    //如果没有获取错误码
+                    if (result.code != 401) {
+
+                        $i = 1;
+                        //遍历结果处理数据进行输出
+                        result.forEach(function(item) {
+                            $("#img" + $i).attr("src", item.imgurl);
+                            $i++;
+                        });
+
+                    } else {
+                        alert(result.info);
+                    }
+                });
+            }
+        </script>

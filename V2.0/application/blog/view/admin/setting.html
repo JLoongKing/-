@@ -1,0 +1,34 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        Blog&nbsp;&nbsp;&nbsp;&nbsp;<a href="review?viewname=admin/blog/new"><strong><small  style="text-decoration:blink;font-size:small;color:teal;">Create New</small></strong></a>
+    </h1>
+    <div class="well summary">
+        <ul>
+            <li>
+                <a style="text-decoration:blink;color:teal;"> Blogs&nbsp;&nbsp;共<span class="BlogCount" id="count">0</span>条数据&nbsp;&nbsp;&nbsp;&nbsp;新建博文</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+</body>
+
+</html>
+<script>
+    //获取分页最大数量
+    //post 请求
+    $.post("/tp50/public/blog/admin/selectnum", {
+        "tablename": "t_blog", //表名
+        "sql": ''
+    }, function(result) {
+        // 显示总条数
+        $("#count").text(result);
+
+    });
+    //更换活动标签（active）
+
+    $(".active").removeClass("active");
+
+    $(".setting").addClass("active");
+</script>

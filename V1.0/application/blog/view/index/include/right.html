@@ -1,0 +1,99 @@
+
+<div class="right"><!--右侧布局-->
+    <div class="date" style="display:none">
+        <div id="lastMon"><</div>
+<div id="dTitle"></div>
+        <div id="nextMon">></div>
+        <div id="dataIn">
+            <div id="tr" class="tr">
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+    <!--data结束-->
+<div class="new">
+    <p>最新<a id="gren">视频</a></p>
+    <ol id="newlist">
+    <li class=""><a id="newbloglist1" style=" color: orangered ;" href="#">1</a></li>
+    <li class=""><a id="newbloglist2" href="#">2</a></li>
+    <li class=""><a id="newbloglist3" href="#" >3</a></li>
+    <li class=""><a id="newbloglist4" href="#">4</a></li>
+    </ol>
+</div><!--new 结束-->
+   <div class="hot"> <!--hot开始-->
+  <p>热度排行</p>
+       <ul id="hotlist">
+           <li type="square" class=""><a id="hotbloglist1" style=" color: orangered ;" href="#">1</a></li>
+           <li type="square" class=""><a id="hotbloglist2" href="#">2</a></li>
+           <li type="square" class=""><a id="hotbloglist3" href="#" >3</a></li>
+           <li type="square"  class=""><a id="hotbloglist4" href="#">4</a></li>
+       </ul>
+  </div> <!--hot结束-->
+</div><!--右侧结束-->
+<div class="clear"></div>
+</div>
+<!-- <p id="frist-words">喜欢吗？</p>
+<p id="second-words">喜欢就选我吧！</p>
+<p id="third-words">与你携手共进！</p> -->
+</body>
+<script>
+      getdata1("id desc","#newbloglist");
+      getdata2("onclick desc","#hotbloglist");
+    //获取数据
+    function getdata1($order,$itemname) {
+        //post 请求
+        $.post("/tp50/public/blog/index/selectorder", {
+            "tablename": "t_blog", //表名
+            "sql": '', //查询的条件
+            "order": $order, //排序规则
+            "limit": "0,4" //分页
+        }, function (result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                $i = 1;
+                //遍历结果处理数据进行输出
+                result.forEach(function (item) {
+                    $($itemname+$i).html(item.title);
+                    $($itemname+$i).attr("href","/tp50/public/blog/index/review?viewname=index/blog&blogid="+item.id);
+                    $i++;
+                });
+              
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+     //获取数据
+     function getdata2($order,$itemname) {
+        //post 请求
+        $.post("/tp50/public/blog/index/selectorder", {
+            "tablename": "t_blogtype", //表名
+            "sql": '', //查询的条件
+            "order": $order, //排序规则
+            "limit": "0,4" //分页
+        }, function (result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                $i = 1;
+                //遍历结果处理数据进行输出
+                result.forEach(function (item) {
+                    $($itemname+$i).html(item.typeName);
+                    $($itemname+$i).attr("href","/tp50/public/blog/index/review?viewname=index&blogid="+item.id);
+                    $i++;
+                });
+              
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+</script>
+<script src="/tp50/public/static/js/main.js"></script>
+</html>

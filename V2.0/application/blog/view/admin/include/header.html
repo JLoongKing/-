@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html lang="en" class="ie6 ielt7 ielt8 ielt9"><![endif]-->
+<!--[if IE 7 ]><html lang="en" class="ie7 ielt8 ielt9"><![endif]-->
+<!--[if IE 8 ]><html lang="en" class="ie8 ielt9"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <title>JLoongKing后台管理界面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/tp50/public/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/tp50/public/static/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/tp50/public/static/css/site.css" rel="stylesheet">
+    <link href="/tp50/public/static/css/banner.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/tp50/public/static/fileinput/css/fileinput.css" />
+    <script type="text/javascript" src="/tp50/public/static/fileinput/js/fileinput.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/fileinput/js/locales/zh.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/ueditor.all.min.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/js/md5.js"></script>
+    <script type="text/javascript" src="/tp50/public/static/js/banner.js"></script>
+</head>
+
+<body>
+    <!-- 按钮触发模态框  -->
+    <button id="alert" style="display:none;" class="btn btn-primary btn-lg" type="hidden" data-toggle="modal" data-target="#myModal"> 开始演示模态框
+    </button>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        网站提示：
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    登陆已失效！请重新登陆
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">quesi
+                    </button> -->
+                    <button type="button" id="alertok" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal -->
+    </div>
+
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </a> <a class="brand" href="#">JLoongKing</a>
+                    <div class="nav-collapse">
+                        <ul id="nav1" class="nav">
+                            <li class="main" class="active">
+                                <a href="/tp50/public/blog/admin/review?viewname=index">
+                                总览
+                            </a>
+                            </li>
+                            <li class="setting">
+                                <a href="/tp50/public/blog/admin/review?viewname=setting">常规设置</a>
+                            </li>
+                            <li class="help">
+                                <a href="/tp50/public/blog/admin/review?viewname=help">帮助</a>
+                            </li>
+                            <li id="email" class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown">email <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#">Introduction Tour</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Project Organisation</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Task Assignment</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Access Permissions</a>
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li class="nav-header">
+                                        Files
+                                    </li>
+                                    <li>
+                                        <a href="#">How to upload multiple files</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Using file version</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav pull-right">
+                            <li>
+                                <a href="/tp50/public/blog/admin/review?viewname=index" id="username">@</a>
+                            </li>
+                            <li>
+                                <a href="/tp50/public/blog/admin/review?viewname=login">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span3">
+                <div class="well" style="padding: 8px 0;">
+                    <ul id="nav2" class="nav nav-list">
+                        <li class="divider">
+                            <li class="nav-header">
+                                JLoongKing
+                            </li>
+                            <li class="divider">
+                                <li id="bannersetting">
+                                    <a href="/tp50/public/blog/admin/review?viewname=banner"><i class="icon-folder-open"></i> banner图设置</a>
+                                </li>
+                                <li id="color">
+                                    <a href="/tp50/public/blog/admin/review?viewname=color"><i class="icon-folder-open"></i> 主题设置</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="nav-header">
+                                    Blog
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li id="bloglist">
+                                    <a class="bloglist" href="/tp50/public/blog/admin/review?viewname=admin/blog/bloglist"><i class="icon-file"></i>博文列表</a>
+                                </li>
+                                <li id="createnewblog">
+                                    <a href="/tp50/public/blog/admin/review?viewname=admin/blog/new"><i class="icon-list-alt"></i> 上传文章</a>
+                                </li>
+
+                                <li class="divider"></li>
+                                <li class="nav-header">
+                                    Blogger
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li id="sign">
+                                    <a href="/tp50/public/blog/admin/review?viewname=admin/admininfo/modifysign"><i class="icon-check"></i> 修改签名</a>
+                                </li>
+                                <li id="password">
+                                    <a href="/tp50/public/blog/admin/review?viewname=admin/admininfo/modifypassword"><i class="icon-envelope"></i> 修改密码</a>
+                                </li>
+                                <li id="icon">
+                                    <a href="/tp50/public/blog/admin/review?viewname=admin/admininfo/modifyicon"><i class="icon-envelope"></i> 修改头像</a>
+                                </li>
+                                <li id="info">
+                                    <a href="/tp50/public/blog/admin/review?viewname=admin/admininfo/modifyinfo"><i class="icon-envelope"></i> 修改详细信息</a>
+                                </li>
+                                <li class="divider">
+                                    <li class="nav-header">
+                                        BlogType
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li id="type">
+                                        <a href="/tp50/public/blog/admin/review?viewname=admin/blogtype/blogtypelist"><i class="icon-check"></i> 所有标签</a>
+                                    </li>
+                                    <li id="addtype">
+                                        <a href="/tp50/public/blog/admin/review?viewname=admin/blogtype/blogtypeadd"><i class="icon-envelope"></i> 标签增加</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li class="nav-header">
+                                        Link
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li id="link">
+                                        <a href="/tp50/public/blog/admin/review?viewname=admin/link/linklist"><i class="icon-check"></i> 友情链接列表</a>
+                                    </li>
+                                    <li id="newlink">
+                                        <a href="/tp50/public/blog/admin/review?viewname=admin/link/addlink"><i class="icon-envelope"></i> 友情链接增加</a>
+                                    </li>
+                                    <li class="nav-header">
+                                        Comment
+                                    </li>
+                                    <li class="divider">
+                                    </li>
+                                    <li id="Comment">
+                                        <a href="/tp50/public/blog/admin/review?viewname=admin/comment/commentlist"><i class="icon-check"></i> 评论列表</a>
+                                    </li>
+                                   
+                    </ul>
+                </div>
+            </div>
+            <script>
+                if ($.cookie('username') == undefined) {
+                    $("#alert").click();
+                    $("#alertok").click(function() {
+                        window.location.href = "/tp50/public/blog/admin/review?viewname=login";
+                    });
+                } else {
+                    $("#username").text("@" + $.cookie('username'));
+                }
+                //更换活动标签（active）
+
+                $(".active").removeClass("active");
+
+                $("#createnewblog").addClass("active");
+            </script>

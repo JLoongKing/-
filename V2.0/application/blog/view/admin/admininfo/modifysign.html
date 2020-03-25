@@ -1,0 +1,81 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        Blogger
+    </h1>
+    <div class="well summary">
+        <ul>
+            <li>
+                <a style="text-decoration:blink;color:teal;"> Bloggers&nbsp;&nbsp;共
+                    <span class="BlogCount" id="count">0</span>条数据&nbsp;&nbsp;&nbsp;&nbsp;修改签名</a>
+            </li>
+        </ul>
+    </div>
+    <div class="form-horizontal">
+        <div class="control-group">
+            <!-- 加载编辑器的容器 -->
+            <script id="container" name="content" type="text/plain"></script>
+        </div>
+         <!-- <button class="btn btn-large btn-block" onclick="update()" type="button">修改</button> -->
+         <div style="margin-top:20px;text-align:center;">
+            <button style="width:15%" class="btn btn-primary" onclick="update()" type="button">修改</button>
+        </div>
+    </div>
+    </body>
+
+    </html>
+    <script>
+        $username = "JLoongKing";
+
+        var ue = UE.getEditor('container', { initialFrameHeight: 200, });
+        //获取分页最大数量
+        //post 请求
+        $.post("/tp50/public/blog/admin/selectnum", {
+            "tablename": "t_blogger", //表名
+            "sql": ''
+        }, function (result) {
+            // 显示总条数
+            $("#count").text(result);
+
+        });
+        //更换活动标签（active）
+
+        $(".active").removeClass("active");
+
+        $("#sign").addClass("active");
+        //获取原签名信息
+        //post 请求
+        $.post("/tp50/public/blog/admin/select", {
+            "tablename": "t_blogger", //表名
+            "sql": '{"userName":"=,' + $username + '"}'
+        }, function (result) {
+            //显示原信息
+            ue.ready(function () {
+                ue.setContent(result[0].sign);
+            });
+
+        });
+        function update() {
+            $sign =  ue.getContent();
+            //post 请求
+            //上传签名
+            $.post("/tp50/public/blog/admin/update", {
+                "tablename": "t_blogger", //表名
+                "fieldname":"userName",
+                "fieldvalue":$username,
+                "data": {
+                    "sign": $sign,
+                }, //上传数据
+            }, function (result) {
+                //回掉函数处理，输出结果
+                //如果没有获取错误码
+                if (result.code != 401) {
+                    alert(result.info);
+                    window.location.href = "/tp50/public/blog/admin/review?viewname=admin/admininfo/modifysign";
+                } else {
+                    alert(result.info);
+                }
+            });
+        }
+
+    </script>

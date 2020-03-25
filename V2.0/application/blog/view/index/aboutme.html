@@ -1,0 +1,31 @@
+{include file="index/include/header" /}
+<div class="left">
+
+    <div id="blogtitle" style="width:100%;margin:10px auto; text-align:center;font-size:20px">关于我</div>
+
+    <!--note-->
+    <div class="note" id="bloginner">
+        {$profile[0]["profile"]}
+    </div>
+</div>
+<!--left结束-->
+<script>
+    // $blogid = "JLoongKing";
+    // //获取本篇博文信息
+    // //post 请求
+    // $.post("/tp50/public/blog/index/select", {
+    //     "tablename": "t_blogger", //表名
+    //     "sql": '{"username":"=,' + $blogid + '"}'
+    // }, function(result) {
+    //     //显示博文原信息
+    //     $("#blogtitle").html("关于我");
+    //     $("#bloginner").html(result[0].profile);
+    //     uParse('#bloginner', {
+    //         rootPath: '/tp50/public/static/ueditor/'
+    //     })
+
+    // });
+    uParse('#bloginner', {
+        rootPath: '/tp50/public/static/ueditor/'
+    })
+</script>{include file="index/include/right" /} {include file="index/include/footer" /}

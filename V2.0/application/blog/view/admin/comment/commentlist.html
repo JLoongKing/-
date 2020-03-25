@@ -1,0 +1,173 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        Comment
+    </h1>
+    <div class="well summary">
+        <ul>
+            <li>
+                <a style="text-decoration:blink;color:teal;"> comments&nbsp;&nbsp;共<span class="BlogCount" id="count">0</span>条数据&nbsp;&nbsp;&nbsp;&nbsp;评论列表</a>
+            </li>
+        </ul>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    用户名
+                </th>
+
+                <th>
+                    博客id
+                </th>
+                <th>
+                    内容
+                </th>
+                <th>
+                    状态
+                </th>
+                <th>
+                    创建时间
+                </th>
+                <th>
+                    修改时间
+                </th>
+                <th>
+                    被回复的评论id
+                </th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+    <ul class="pager">
+        <li id="older" onclick="older()" class="previous"><a>&larr;Older</a></li>
+        <li>
+            <a id="page">1</a>
+        </li>
+        <li id="more" class="next" onclick="next()">
+            <a>Next &rarr;</a>
+        </li>
+    </ul>
+</div>
+</div>
+</div>
+
+</body>
+
+</html>
+<script>
+    $eachnum = 5;
+    $maxnum = 1;
+    //获取分页最大数量
+    //post 请求
+    $.post("/tp50/public/blog/admin/selectnum", {
+        "tablename": "t_comment", //表名
+        "sql": ''
+    }, function(result) {
+        // 显示总条数
+        $("#count").text(result);
+        //获取数据数量除每页条数
+        $maxnum = parseInt(result / $eachnum) + 1;
+    });
+    //初始页面数
+    $page = 1;
+    //页面初始化
+    pagealert();
+    getdata();
+    //更换活动标签（active）
+
+    $(".active").removeClass("active");
+
+    $("#comment").addClass("active");
+
+    //删除数据
+    function dodelete(id) {
+        $.post("/tp50/public/blog/admin/delete", {
+            "tablename": "t_comment", //表名
+            "fieldname": 'id', //删除的条件字段
+            "fieldvalue": id //删除条件的值
+        }, function(result) {
+            if (result.code != 1401) {
+                alert("删除成功!");
+                pagealert();
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+
+    //获取分页数据
+    function getdata() {
+        //post 请求
+        $.post("/tp50/public/blog/admin/select", {
+            "tablename": "t_comment", //表名
+            "sql": '', //查询的条件
+            "limit": ($page - 1) * $eachnum + "," + $page * $eachnum //分页
+        }, function(result) {
+            //回掉函数处理，输出结果
+            //如果没有获取错误码
+            if (result.code != 401) {
+                $html = "";
+                //遍历结果处理数据进行输出
+                result.forEach(function(item) {
+                    $inner = "<tr>";
+                    //将每一项数据进行遍历，生成html代码
+                    $.each(item, function(key, val) {
+                        if (val != null && val.length > 100) {
+                            val = val.substring(0, 100) + "......";
+                        }
+                        $inner = $inner + "<td>" + val + "</td>"
+                    });
+                    $a2 = "<td><a onclick='dodelete(" + item.id + ")'>删除</a></td>";
+                    $inner = $inner + $a2;
+                    $html += $inner;
+                });
+                $("#tbody").html($html);
+            } else {
+                alert(result.info);
+            }
+        });
+    }
+    //下一页
+    function next() {
+        $page++;
+        pagealert();
+    }
+    //上一页
+    function older() {
+        $page--;
+        pagealert();
+    }
+    // 页面变化处理
+    function pagealert() {
+        if ($page <= 1) {
+            if ($page == 1) {
+                getdata();
+            }
+            $page = 1;
+            $("#older").addClass("disabled");
+            $("#more").removeClass("disabled");
+            $("#page").text($page);
+        } else if ($page >= $maxnum) {
+            if ($page == $maxnum) {
+                getdata();
+            }
+            $page = $maxnum;
+            $("#more").addClass("disabled");
+            $("#older").removeClass("disabled");
+            $("#page").text($page);
+        } else {
+            $("#older").removeClass("disabled");
+            $("#more").removeClass("disabled");
+            $("#page").text($page);
+            getdata();
+        }
+
+    }
+</script>

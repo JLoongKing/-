@@ -1,0 +1,119 @@
+{include file="admin/include/header" /}
+<div class="span9">
+    <h1>
+        Blogger
+    </h1>
+    <div class="well summary">
+        <ul>
+            <li>
+                <a style="text-decoration:blink;color:teal;"> Bloggers&nbsp;&nbsp;共
+                    <span class="BlogCount" id="count">0</span>条数据&nbsp;&nbsp;&nbsp;&nbsp;修改头像</a>
+            </li>
+        </ul>
+    </div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <img style="width:200px;height:200px" id="img" src="/tp50/public/static/img/load.gif" class="img-circle">
+            <div class="file-container" style="display:inline-block;position:relative;overflow: hidden;vertical-align:middle">
+                <button class="btn btn-success fileinput-button" type="button">上传</button>
+                <input type="file" id="file_img" style="position:absolute;top:0;left:0;font-size:34px; opacity:0">
+            </div>
+            <span id="filename" style="vertical-align: middle">未上传文件</span>
+        </div>
+        <div style="margin-top:20px;text-align:center;">
+            <button style="width:15%" class="btn btn-primary" onclick="update()" type="button">修改</button>
+        </div>
+    </div>
+    </body>
+
+    </html>
+    <script>
+        $(function () {
+            $('#file_img').change(function () {
+                $("#filename").html($("#file_img").get(0).files[0].name);
+                $("#img").attr("src", "/tp50/public/static/img/load.gif");
+                var fd = new FormData();
+                fd.append("upfile", $("#file_img").get(0).files[0]);
+                $.ajax({
+                    url: '/tp50/public/blog/fileuploader/up',
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    data: fd,
+                    success: function (result) {
+                        if (result.code != 400) {
+                            alert("上传失败！");
+                            $("#img").attr("src", "/tp50/public/static/img/imgfailed.jpg");
+                        } else {
+                            $("#img").attr("src", result.url);
+                        }
+                    },
+                    error: function (result) {
+
+                        alert("上传失败！");
+                        $("#img").attr("src", "/tp50/public/static/img/imgfailed.jpg");
+
+                    },
+                });
+            });
+        })
+        $username = "JLoongKing";
+        //获取原头像信息
+        //post 请求
+        $.post("/tp50/public/blog/admin/select", {
+            "tablename": "t_blogger", //表名
+            "sql": '{"userName":"=,' + $username + '"}'
+        }, function (result) {
+            //显示原信息
+            $("#img").attr("src", result[0].imageName);
+
+        });
+        //获取分页最大数量
+        //post 请求
+        $.post("/tp50/public/blog/admin/selectnum", {
+            "tablename": "t_blogger", //表名
+            "sql": ''
+        }, function (result) {
+            // 显示总条数
+            $("#count").text(result);
+
+        });
+        //更换活动标签（active）
+
+        $(".active").removeClass("active");
+
+        $("#icon").addClass("active");
+        //获取原头像信息
+        //post 请求
+        $.post("/tp50/public/blog/admin/select", {
+            "tablename": "t_blogger", //表名
+            "sql": '{"userName":"=,' + $username + '"}'
+        }, function (result) {
+            //显示原信息
+            //ue.setContent(result[0].icon);
+
+        });
+        function update() {
+            $icon = $("#img").attr("src");
+            //post 请求
+            //上传icon
+            $.post("/tp50/public/blog/admin/update", {
+                "tablename": "t_blogger", //表名
+                "fieldname": "userName",
+                "fieldvalue": $username,
+                "data": {
+                    "imageName": $icon,
+                }, //上传数据
+            }, function (result) {
+                //回掉函数处理，输出结果
+                //如果没有获取错误码
+                if (result.code != 401) {
+                    alert(result.info);
+                    window.location.href = "/tp50/public/blog/admin/review?viewname=admin/admininfo/modifyicon";
+                } else {
+                    alert(result.info);
+                }
+            });
+        }
+
+    </script>
